@@ -65,13 +65,13 @@
 				A7D472C11CA068A500F15F1F /* AppDelegate.m */,
 				A7D472C31CA068A500F15F1F /* ViewController.h */,
 				A7D472C41CA068A500F15F1F /* ViewController.m */,
+				A7D472D41CA084C200F15F1F /* DetailViewController.h */,
+				A7D472D51CA084C200F15F1F /* DetailViewController.m */,
 				A7D472C61CA068A500F15F1F /* Main.storyboard */,
 				A7D472C91CA068A500F15F1F /* Assets.xcassets */,
 				A7D472CB1CA068A500F15F1F /* LaunchScreen.storyboard */,
 				A7D472CE1CA068A500F15F1F /* Info.plist */,
 				A7D472BD1CA068A500F15F1F /* Supporting Files */,
-				A7D472D41CA084C200F15F1F /* DetailViewController.h */,
-				A7D472D51CA084C200F15F1F /* DetailViewController.m */,
 			);
 			path = W3D1ScrollViewImageGalleries;
 			sourceTree = "<group>";

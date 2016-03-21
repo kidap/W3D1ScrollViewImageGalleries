@@ -23,22 +23,28 @@
   [self addElementsToScrollView];
 }
 -(void)viewDidAppear:(BOOL)animated{
+  
+  [self.scrollView setZoomScale:0.4];
   [self setupConstraints];
+  self.imageView.alpha = 1;
 }
 
 -(void)setupScrollView{
   self.scrollView.delegate = self;
   self.scrollView.minimumZoomScale = 0.4;
   self.scrollView.maximumZoomScale = 10;
+  [self.scrollView setZoomScale:0.4];
+  
   
 }
 -(void)addElementsToScrollView{
   if (!self.image) {
-    self.image = [UIImage imageNamed:@"Lighthouse"];
+    NSLog(@"No image");
   }
   
   self.imageView = [[UIImageView alloc] initWithImage:self.image];
   [self.scrollView addSubview:self.imageView];
+  self.imageView.alpha = 0;
   
   
 }

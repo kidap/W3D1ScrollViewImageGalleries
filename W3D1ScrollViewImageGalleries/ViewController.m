@@ -33,6 +33,11 @@
 -(void)viewDidAppear:(BOOL)animated{
   //bounds should be changed in viewDidAppear
   [self setupConstraints];
+  
+  self.imageView1.alpha = 1;
+  self.imageView2.alpha = 1;
+  self.imageView3.alpha = 1;
+  
 }
 
 - (void)didReceiveMemoryWarning {
@@ -67,12 +72,19 @@
   self.imageView2.userInteractionEnabled = YES;
   self.imageView3.userInteractionEnabled = YES;
   
+  self.imageView1.alpha = 0;
+  self.imageView2.alpha = 0;
+  self.imageView3.alpha = 0;
+  
   
   self.pageControl = [[UIPageControl alloc] initWithFrame:CGRectZero];
   self.pageControl.pageIndicatorTintColor  = [UIColor grayColor];
   self.pageControl.currentPageIndicatorTintColor  = [UIColor blackColor];
   self.pageControl.numberOfPages = 3;
   self.pageControl.translatesAutoresizingMaskIntoConstraints = NO;
+//  [self.pageControl addTarget:self
+//                         action:@selector(handlePageControlTaps)
+//               forControlEvents:UIControlEventTouchDown];
   
   
   [self.scrollView addSubview:self.imageView1];
@@ -82,14 +94,22 @@
   
 }
 -(void)addGestures{
-  UITapGestureRecognizer *tapToGoDetail1 = [[UITapGestureRecognizer alloc ] initWithTarget:self action:@selector(goToDetailView:)];
+  UITapGestureRecognizer *tapToGoDetail1 = [[UITapGestureRecognizer alloc ] initWithTarget:self
+                                                                                    action:@selector(goToDetailView:)];
   [self.imageView1 addGestureRecognizer:tapToGoDetail1];
   
-  UITapGestureRecognizer *tapToGoDetail2 = [[UITapGestureRecognizer alloc ] initWithTarget:self action:@selector(goToDetailView:)];
+  UITapGestureRecognizer *tapToGoDetail2 = [[UITapGestureRecognizer alloc ] initWithTarget:self
+                                                                                    action:@selector(goToDetailView:)];
   [self.imageView2 addGestureRecognizer:tapToGoDetail2];
   
-  UITapGestureRecognizer *tapToGoDetail3 = [[UITapGestureRecognizer alloc ] initWithTarget:self action:@selector(goToDetailView:)];
+  UITapGestureRecognizer *tapToGoDetail3 = [[UITapGestureRecognizer alloc ] initWithTarget:self
+                                                                                    action:@selector(goToDetailView:)];
   [self.imageView3 addGestureRecognizer:tapToGoDetail3];
+  
+  
+  UITapGestureRecognizer *tapPageControl = [[UITapGestureRecognizer alloc ] initWithTarget:self
+                                                                                    action:@selector(handlePageControlTaps:)];
+  [self.pageControl addGestureRecognizer:tapPageControl];
 
 }
 -(void)goToDetailView:(UITapGestureRecognizer *)recognizer{
@@ -201,25 +221,28 @@
                                                               attribute:NSLayoutAttributeCenterX
                                                              multiplier:1.0
                                                                constant:0.0 ]];
-  
-//    NSLog(@"PageCtl:%@", NSStringFromCGRect(self.pageControl.bounds));
-//    NSLog(@"PageCtl:%@", NSStringFromCGSize(self.scrollView.bounds.size));
-//  NSLog(@"Image1:%@", NSStringFromCGRect(self.imageView1.bounds));
-//  NSLog(@"Image2:%@", NSStringFromCGRect(self.imageView2.bounds));
-//  NSLog(@"Image3:%@", NSStringFromCGRect(self.imageView3.bounds));
-//  NSLog(@"Content size:%@",NSStringFromCGSize(self.scrollView.bounds.size));
-  
-
 }
 
 //MARK: Scroll View delegates
 -(void)scrollViewDidScroll:(UIScrollView *)scrollView{
-  //NSLog(@"Bounds y: %f", scrollView.bounds.origin.x);
-  
-  //self.pageControl
   self.pageControl.currentPage = (scrollView.bounds.origin.x / scrollView.bounds.size.width);
-  NSLog(@"%f, %f",scrollView.bounds.origin.x,scrollView.bounds.size.width);
-  NSLog(@"%@",[@(self.pageControl.currentPage) stringValue]);
+}
+
+//MARK:Page control tap
+-(void)handlePageControlTaps:(UITapGestureRecognizer *)recognizer{
+  NSLog(@"Page control tapped");
+  
+  //Increment page control
+  self.pageControl.currentPage += 1;
+
+  self.scrollView.bounds = CGRectOffset(self.scrollView.bounds, self.scrollView.bounds.size.width, 0);
+  
+  //If already in the last page, go back to the first page.
+  if (self.scrollView.bounds.origin.x >= self.scrollView.contentSize.width) {
+    self.scrollView.bounds = CGRectMake(0, CGRectGetMinY(self.scrollView.bounds), CGRectGetWidth(self.scrollView.bounds), CGRectGetHeight(self.scrollView.bounds));
+    self.pageControl.currentPage = 0;
+  }
+  
 }
 
 //MARK: Helper methods
