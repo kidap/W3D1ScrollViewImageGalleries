@@ -7,12 +7,14 @@
 //
 
 #import "ViewController.h"
+#import "DetailViewController.h"
 
 @interface ViewController ()<UIScrollViewDelegate>
 @property (strong, nonatomic) IBOutlet UIScrollView *scrollView;
 @property (strong, nonatomic)UIImageView *imageView1;
 @property (strong, nonatomic)UIImageView *imageView2;
 @property (strong, nonatomic)UIImageView *imageView3;
+@property (strong, nonatomic)UIPageControl *pageControl;
 
 @end
 
@@ -24,6 +26,7 @@
   
   [self setupScrollView];
   [self addElementsToScrollView];
+  [self addGestures];
 
 }
 
@@ -36,12 +39,12 @@
   [super didReceiveMemoryWarning];
   // Dispose of any resources that can be recreated.
 }
-//MARK: ScrollView
+
+//MARK: Preparation
 -(void) setupScrollView{
   self.scrollView.delegate = self;
   self.scrollView.scrollEnabled = YES;
   self.scrollView.pagingEnabled = YES;
-  //self.scrollView.contentSize = CGSizeMake(1000, 1000);
 }
 -(void)addElementsToScrollView{
   UIImage *image1 = [UIImage imageNamed:@"Lighthouse-in-Field"];
@@ -51,22 +54,62 @@
   self.imageView1 = [[UIImageView alloc] initWithImage:image1];
   self.imageView2 = [[UIImageView alloc] initWithImage:image2];
   self.imageView3 = [[UIImageView alloc] initWithImage:image3];
+  
   self.imageView1.contentMode = UIViewContentModeScaleAspectFit;
   self.imageView2.contentMode = UIViewContentModeScaleAspectFit;
   self.imageView3.contentMode = UIViewContentModeScaleAspectFit;
+  
   self.imageView1.translatesAutoresizingMaskIntoConstraints = NO;
   self.imageView2.translatesAutoresizingMaskIntoConstraints = NO;
   self.imageView3.translatesAutoresizingMaskIntoConstraints = NO;
   
+  self.imageView1.userInteractionEnabled = YES;
+  self.imageView2.userInteractionEnabled = YES;
+  self.imageView3.userInteractionEnabled = YES;
+  
+  
+  self.pageControl = [[UIPageControl alloc] initWithFrame:CGRectZero];
+  self.pageControl.pageIndicatorTintColor  = [UIColor grayColor];
+  self.pageControl.currentPageIndicatorTintColor  = [UIColor blackColor];
+  self.pageControl.numberOfPages = 3;
+  self.pageControl.translatesAutoresizingMaskIntoConstraints = NO;
+  
+  
   [self.scrollView addSubview:self.imageView1];
   [self.scrollView addSubview:self.imageView2];
   [self.scrollView addSubview:self.imageView3];
-  
-  
+  [self.view addSubview:self.pageControl];
   
 }
+-(void)addGestures{
+  UITapGestureRecognizer *tapToGoDetail1 = [[UITapGestureRecognizer alloc ] initWithTarget:self action:@selector(goToDetailView:)];
+  [self.imageView1 addGestureRecognizer:tapToGoDetail1];
+  
+  UITapGestureRecognizer *tapToGoDetail2 = [[UITapGestureRecognizer alloc ] initWithTarget:self action:@selector(goToDetailView:)];
+  [self.imageView2 addGestureRecognizer:tapToGoDetail2];
+  
+  UITapGestureRecognizer *tapToGoDetail3 = [[UITapGestureRecognizer alloc ] initWithTarget:self action:@selector(goToDetailView:)];
+  [self.imageView3 addGestureRecognizer:tapToGoDetail3];
+
+}
+-(void)goToDetailView:(UITapGestureRecognizer *)recognizer{
+  [self performSegueWithIdentifier:@"goToDetailView" sender:recognizer.view];
+}
+
+-(void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender{
+  if ([segue.identifier isEqualToString:@"goToDetailView"]) {
+    DetailViewController *destinationVC = segue.destinationViewController;
+    UIImageView *imageSelected = (UIImageView *)sender;
+    destinationVC.image = imageSelected.image;
+    
+  }
+  
+}
+
+//MARK: Constraints
 -(void)setupConstraints{
   
+  //Set up height and width
   [self setConstraintForItem:self.imageView1
                    WithWidth:CGRectGetWidth(self.scrollView.bounds)
                   withHeight:CGRectGetHeight(self.scrollView.bounds)];
@@ -78,13 +121,19 @@
                   withHeight:CGRectGetHeight(self.scrollView.bounds)];
   
   
+  [self setConstraintForItem:self.pageControl
+                   WithWidth:[self.pageControl sizeForNumberOfPages:3].width
+                  withHeight:[self.pageControl sizeForNumberOfPages:3].height];
+  
+  
+  //Set other constraints
   [self.scrollView addConstraint:[NSLayoutConstraint constraintWithItem:self.imageView1
                                                               attribute:NSLayoutAttributeLeft
                                                               relatedBy:NSLayoutRelationEqual
                                                                  toItem:self.scrollView
                                                               attribute:NSLayoutAttributeLeft
                                                              multiplier:1.0
-                                                               constant:1.0 ]];
+                                                               constant:0.0 ]];
   
   [self.scrollView addConstraint:[NSLayoutConstraint constraintWithItem:self.imageView1
                                                               attribute:NSLayoutAttributeTop
@@ -92,7 +141,7 @@
                                                                  toItem:self.scrollView
                                                               attribute:NSLayoutAttributeTop
                                                              multiplier:1.0
-                                                               constant:1.0 ]];
+                                                               constant:0.0 ]];
   
   
   [self.scrollView addConstraint:[NSLayoutConstraint constraintWithItem:self.imageView2
@@ -101,7 +150,7 @@
                                                                  toItem:self.imageView1
                                                               attribute:NSLayoutAttributeRight
                                                              multiplier:1.0
-                                                               constant:1.0 ]];
+                                                               constant:0.0 ]];
   
   [self.scrollView addConstraint:[NSLayoutConstraint constraintWithItem:self.imageView2
                                                               attribute:NSLayoutAttributeTop
@@ -109,7 +158,7 @@
                                                                  toItem:self.scrollView
                                                               attribute:NSLayoutAttributeTop
                                                              multiplier:1.0
-                                                               constant:1.0 ]];
+                                                               constant:0.0 ]];
   
   
   [self.scrollView addConstraint:[NSLayoutConstraint constraintWithItem:self.imageView3
@@ -118,7 +167,7 @@
                                                                  toItem:self.imageView2
                                                               attribute:NSLayoutAttributeRight
                                                              multiplier:1.0
-                                                               constant:1.0 ]];
+                                                               constant:0.0 ]];
   
   [self.scrollView addConstraint:[NSLayoutConstraint constraintWithItem:self.imageView3
                                                               attribute:NSLayoutAttributeTop
@@ -126,7 +175,7 @@
                                                                  toItem:self.scrollView
                                                               attribute:NSLayoutAttributeTop
                                                              multiplier:1.0
-                                                               constant:1.0 ]];
+                                                               constant:0.0 ]];
   
   [self.scrollView addConstraint:[NSLayoutConstraint constraintWithItem:self.imageView3
                                                               attribute:NSLayoutAttributeRight
@@ -134,20 +183,46 @@
                                                                  toItem:self.scrollView
                                                               attribute:NSLayoutAttributeRight
                                                              multiplier:1.0
-                                                               constant:1.0 ]];
+                                                               constant:0.0 ]];
   
   
-  NSLog(@"Image1:%@", NSStringFromCGRect(self.imageView1.bounds));
-  NSLog(@"Image2:%@", NSStringFromCGRect(self.imageView2.bounds));
-  NSLog(@"Image3:%@", NSStringFromCGRect(self.imageView3.bounds));
-  NSLog(@"Content size:%@",NSStringFromCGSize(self.scrollView.bounds.size));
+  [self.view addConstraint:[NSLayoutConstraint constraintWithItem:self.pageControl
+                                                              attribute:NSLayoutAttributeBottom
+                                                              relatedBy:NSLayoutRelationEqual
+                                                                 toItem:self.view
+                                                              attribute:NSLayoutAttributeBottom
+                                                             multiplier:1.0
+                                                               constant:0.0 ]];
+  
+  [self.view addConstraint:[NSLayoutConstraint constraintWithItem:self.pageControl
+                                                              attribute:NSLayoutAttributeCenterX
+                                                              relatedBy:NSLayoutRelationEqual
+                                                                 toItem:self.view
+                                                              attribute:NSLayoutAttributeCenterX
+                                                             multiplier:1.0
+                                                               constant:0.0 ]];
+  
+//    NSLog(@"PageCtl:%@", NSStringFromCGRect(self.pageControl.bounds));
+//    NSLog(@"PageCtl:%@", NSStringFromCGSize(self.scrollView.bounds.size));
+//  NSLog(@"Image1:%@", NSStringFromCGRect(self.imageView1.bounds));
+//  NSLog(@"Image2:%@", NSStringFromCGRect(self.imageView2.bounds));
+//  NSLog(@"Image3:%@", NSStringFromCGRect(self.imageView3.bounds));
+//  NSLog(@"Content size:%@",NSStringFromCGSize(self.scrollView.bounds.size));
   
 
 }
+
+//MARK: Scroll View delegates
 -(void)scrollViewDidScroll:(UIScrollView *)scrollView{
-  NSLog(@"trying to scroll");
+  //NSLog(@"Bounds y: %f", scrollView.bounds.origin.x);
+  
+  //self.pageControl
+  self.pageControl.currentPage = (scrollView.bounds.origin.x / scrollView.bounds.size.width);
+  NSLog(@"%f, %f",scrollView.bounds.origin.x,scrollView.bounds.size.width);
+  NSLog(@"%@",[@(self.pageControl.currentPage) stringValue]);
 }
 
+//MARK: Helper methods
 -(void)setConstraintForItem:(id)item WithWidth:(CGFloat)width withHeight:(CGFloat)height{
   
   [item addConstraint:[NSLayoutConstraint constraintWithItem:item
