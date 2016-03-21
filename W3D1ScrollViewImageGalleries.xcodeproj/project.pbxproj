@@ -13,6 +13,7 @@
 		A7D472C81CA068A500F15F1F /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = A7D472C61CA068A500F15F1F /* Main.storyboard */; };
 		A7D472CA1CA068A500F15F1F /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A7D472C91CA068A500F15F1F /* Assets.xcassets */; };
 		A7D472CD1CA068A500F15F1F /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = A7D472CB1CA068A500F15F1F /* LaunchScreen.storyboard */; };
+		A7D472D61CA084C200F15F1F /* DetailViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A7D472D51CA084C200F15F1F /* DetailViewController.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -26,6 +27,8 @@
 		A7D472C91CA068A500F15F1F /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		A7D472CC1CA068A500F15F1F /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		A7D472CE1CA068A500F15F1F /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		A7D472D41CA084C200F15F1F /* DetailViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DetailViewController.h; sourceTree = "<group>"; };
+		A7D472D51CA084C200F15F1F /* DetailViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DetailViewController.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -67,6 +70,8 @@
 				A7D472CB1CA068A500F15F1F /* LaunchScreen.storyboard */,
 				A7D472CE1CA068A500F15F1F /* Info.plist */,
 				A7D472BD1CA068A500F15F1F /* Supporting Files */,
+				A7D472D41CA084C200F15F1F /* DetailViewController.h */,
+				A7D472D51CA084C200F15F1F /* DetailViewController.m */,
 			);
 			path = W3D1ScrollViewImageGalleries;
 			sourceTree = "<group>";
@@ -153,6 +158,7 @@
 				A7D472C51CA068A500F15F1F /* ViewController.m in Sources */,
 				A7D472C21CA068A500F15F1F /* AppDelegate.m in Sources */,
 				A7D472BF1CA068A500F15F1F /* main.m in Sources */,
+				A7D472D61CA084C200F15F1F /* DetailViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

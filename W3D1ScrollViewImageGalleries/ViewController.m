@@ -28,7 +28,7 @@
 }
 
 -(void)viewDidAppear:(BOOL)animated{
-  
+  //bounds should be changed in viewDidAppear
   [self setupConstraints];
 }
 
