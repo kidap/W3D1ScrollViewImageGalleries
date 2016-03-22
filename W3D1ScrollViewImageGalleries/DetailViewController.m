@@ -73,7 +73,10 @@
   if (CGRectGetMinY(self.scrollView.bounds) <= CGRectGetHeight(self.scrollView.bounds) ||
       CGRectGetMinX(self.scrollView.bounds) <= CGRectGetWidth(self.scrollView.bounds)){
     
-    self.scrollView.bounds = CGRectMake(CGRectGetMinX(self.scrollView.bounds), (self.scrollView.contentSize.height - CGRectGetHeight(self.scrollView.bounds)) / 2, CGRectGetWidth(self.scrollView.bounds), CGRectGetHeight(self.scrollView.bounds));
+    //self.scrollView.bounds = CGRectMake(CGRectGetMinX(self.scrollView.bounds), (self.scrollView.contentSize.height - CGRectGetHeight(self.scrollView.bounds)) / 2, CGRectGetWidth(self.scrollView.bounds), CGRectGetHeight(self.scrollView.bounds));
+    
+    //Center image using ContentOffset
+    [self.scrollView setContentOffset:(CGPointMake(CGRectGetMinX(self.scrollView.bounds), (self.scrollView.contentSize.height - CGRectGetHeight(self.scrollView.bounds)) / 2)) animated:YES];
   }
 }
 
@@ -84,6 +87,7 @@
   NSLog(@"ImageView Bounds: %@", NSStringFromCGRect(self.imageView.bounds));
   NSLog(@"ImageView Frame: %@", NSStringFromCGRect(self.imageView.frame));
   NSLog(@"Zoom scale: %.4f", self.scrollView.zoomScale);
+  NSLog(@"Content offset: %f %f", self.scrollView.contentOffset.x, self.scrollView.contentOffset.y);
   
 }
 
