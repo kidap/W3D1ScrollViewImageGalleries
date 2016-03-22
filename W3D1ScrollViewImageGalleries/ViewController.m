@@ -26,83 +26,75 @@
   [super viewDidLoad];
   // Do any additional setup after loading the view, typically from a nib.
   
-  [self prepareView];
-  [self addElementsToScrollView];
-  [self addGestures];
+  [self setupScrollView];
+  NSLog(@"viewDidLoad");
 
 }
 
 -(void)viewDidAppear:(BOOL)animated{
   //bounds should be changed in viewDidAppear
+  [self addElementsToScrollView];
+  [self addGestures];
   [self setupConstraints];
   
-  //Show images
-  for (UIImageView *imageView in self.imageViewArray) {
-    imageView.alpha = 1;
-  }
+  NSLog(@"viewDidAppear");
+}
+-(void)viewDidLayoutSubviews{
+  
+  NSLog(@"viewDidLayoutSubviews");
 }
 //MARK: Preparation
--(void)prepareView{
-  self.imageArray = [[NSMutableArray alloc] init];
-  self.imageViewArray = [[NSMutableArray alloc] init];
-  
-  [self setupScrollView];
-}
 -(void) setupScrollView{
   self.scrollView.delegate = self;
   self.scrollView.scrollEnabled = YES;
   self.scrollView.pagingEnabled = YES;
 }
 -(void)addElementsToScrollView{
+  self.imageArray = [[NSMutableArray alloc] init];
+  self.imageViewArray = [[NSMutableArray alloc] init];
   
+  //Image Array
   [self.imageArray addObject:[UIImage imageNamed:@"Lighthouse-in-Field"]];
   [self.imageArray addObject:[UIImage imageNamed:@"Lighthouse-night"]];
   [self.imageArray addObject:[UIImage imageNamed:@"Lighthouse"]];
-  
+  //Image View Array
   for (UIImage *image in self.imageArray) {
     UIImageView *imageView = [[UIImageView alloc] initWithImage:image];
     imageView.contentMode = UIViewContentModeScaleAspectFit;
     imageView.translatesAutoresizingMaskIntoConstraints = NO;
     imageView.userInteractionEnabled = YES;
-    imageView.alpha = 0; //loop initially as invisible
     [self.scrollView addSubview:imageView];
     [self.imageViewArray addObject:imageView];
   }
-  
+  //Page Control
   self.pageControl = [[UIPageControl alloc] initWithFrame:CGRectZero];
   self.pageControl.pageIndicatorTintColor  = [UIColor grayColor];
   self.pageControl.currentPageIndicatorTintColor  = [UIColor blackColor];
   self.pageControl.numberOfPages = self.imageViewArray.count;
   self.pageControl.translatesAutoresizingMaskIntoConstraints = NO;
+  
+  
+  [self.pageControl addTarget:self
+                       action:@selector(handlePageControlTap:)
+             forControlEvents:UIControlEventValueChanged];
   [self.view addSubview:self.pageControl];
   
 }
 -(void)addGestures{
+  //Tap Gesture to go to the Detail View Controller
   for (UIImageView *imageView in self.imageViewArray) {
     UITapGestureRecognizer *tapToGoDetail = [[UITapGestureRecognizer alloc ] initWithTarget:self
                                                                                       action:@selector(goToDetailView:)];
     [imageView addGestureRecognizer:tapToGoDetail];
   }
   
-  UITapGestureRecognizer *tapPageControl = [[UITapGestureRecognizer alloc ] initWithTarget:self
-                                                                                    action:@selector(handlePageControlTaps:)];
-  [self.pageControl addGestureRecognizer:tapPageControl];
-
-}
--(void)goToDetailView:(UITapGestureRecognizer *)recognizer{
-  [self performSegueWithIdentifier:@"goToDetailView" sender:recognizer.view];
-}
-
--(void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender{
-  if ([segue.identifier isEqualToString:@"goToDetailView"]) {
-    DetailViewController *destinationVC = segue.destinationViewController;
-    UIImageView *imageSelected = (UIImageView *)sender;
-    destinationVC.image = imageSelected.image;
-    
-  }
+// Use standard UIControlEventValueChanged
+//  //Tap Gesture to go to next page - Page control
+//  UITapGestureRecognizer *tapPageControl = [[UITapGestureRecognizer alloc ] initWithTarget:self
+//                                                                                    action:@selector(handlePageControlTaps:)];
+//  [self.pageControl addGestureRecognizer:tapPageControl];
   
 }
-
 //MARK: Constraints
 -(void)setupConstraints{
   
@@ -122,6 +114,9 @@
   //Set other constraints for images
   for (int ctr = 0; ctr < self.imageViewArray.count;ctr++) {
     UIImageView *imageView = self.imageViewArray[ctr];
+    //If index = 0, snap to left and top.
+    //If index = last, snap to top and right and using previous image view's right contraint for current view's left contrainst
+    //Else, snap to top and using previous image view's right contraint for current view's left contrainst
     if (ctr == 0){
       [self.scrollView addConstraint:[NSLayoutConstraint constraintWithItem:imageView
                                                                   attribute:NSLayoutAttributeLeft
@@ -208,18 +203,26 @@
 
 //MARK:Page control tap
 -(void)handlePageControlTaps:(UITapGestureRecognizer *)recognizer{
-  //Increment page control
-  self.pageControl.currentPage += 1;
+//  //Increment page control
+//  self.pageControl.currentPage += 1;
+//  
+//  //Adjust the bounds to display the next page
+//  self.scrollView.bounds = CGRectOffset(self.scrollView.bounds, self.scrollView.bounds.size.width, 0);
+//  
+//  //If already in the last page, go back to the first page.
+//  if (self.scrollView.bounds.origin.x >= self.scrollView.contentSize.width) {
+//    self.scrollView.bounds = CGRectMake(0, CGRectGetMinY(self.scrollView.bounds), CGRectGetWidth(self.scrollView.bounds), CGRectGetHeight(self.scrollView.bounds));
+//    self.pageControl.currentPage = 0;
+//  }
   
+}
+
+-(void)handlePageControlTap:(UIPageControl *) sender{
   //Adjust the bounds to display the next page
-  self.scrollView.bounds = CGRectOffset(self.scrollView.bounds, self.scrollView.bounds.size.width, 0);
-  
-  //If already in the last page, go back to the first page.
-  if (self.scrollView.bounds.origin.x >= self.scrollView.contentSize.width) {
-    self.scrollView.bounds = CGRectMake(0, CGRectGetMinY(self.scrollView.bounds), CGRectGetWidth(self.scrollView.bounds), CGRectGetHeight(self.scrollView.bounds));
-    self.pageControl.currentPage = 0;
-  }
-  
+  self.scrollView.bounds = CGRectMake(self.scrollView.bounds.size.width * self.pageControl.currentPage,
+                                      CGRectGetMinY(self.scrollView.bounds),
+                                      CGRectGetWidth(self.scrollView.bounds),
+                                      CGRectGetHeight(self.scrollView.bounds));
 }
 
 //MARK: Helper methods
@@ -243,4 +246,17 @@
 
 }
 
+//MARK: Segues
+-(void)goToDetailView:(UITapGestureRecognizer *)recognizer{
+  [self performSegueWithIdentifier:@"goToDetailView" sender:recognizer.view];
+}
+
+-(void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender{
+  if ([segue.identifier isEqualToString:@"goToDetailView"]) {
+    DetailViewController *destinationVC = segue.destinationViewController;
+    UIImageView *imageSelected = (UIImageView *)sender;
+    destinationVC.image = imageSelected.image;
+    
+  }
+}
 @end
